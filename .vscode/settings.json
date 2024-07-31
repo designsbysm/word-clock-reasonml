@@ -1,6 +1,6 @@
 {
   "ocaml.sandbox": {
     "kind": "opam",
-    "switch": "${workspaceFolder:reasonml}"
+    "switch": "${workspaceFolder:clock-reasonml}"
   }
 }

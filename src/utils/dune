@@ -1,6 +1,6 @@
 (library
  (name utils)
  (modes melange)
- (libraries melange.js reason-react)
+ (libraries melange.js reason-react types)
  (preprocess
   (pps melange.ppx reason-react-ppx)))

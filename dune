@@ -12,6 +12,7 @@
  (deps
   (alias_rec ahrefs)
   (:index_html ./index.html)
+  (:index_css ./index.css)
   (:vite ./vite.config.js))
  (action
   (system "../../node_modules/.bin/vite build"))

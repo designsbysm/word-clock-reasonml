@@ -1,6 +1,6 @@
 (library
  (name app)
  (modes melange)
- (libraries bindings melange.belt reason-react types) 
+ (libraries bindings components melange.belt reason-react types)
  (preprocess
   (pps melange.ppx reason-react-ppx)))

@@ -18,23 +18,19 @@ module Cell = {
     value: option(string),
   };
 
-  let make = (fallback, value) => {fallback, value};
+  let make = (~fallback, ~value) => {fallback, value};
 };
 
 module Row = {
-  type t = Belt.HashMap.Int.t(Cell.t);
+  type t = List.t(Cell.t);
 
-  let make = count =>
-    count
-    ->Belt.Array.make()
-    ->Belt.Array.mapWithIndex((index, _) => (index, Cell.make(None, None)))
-    ->Belt.HashMap.Int.fromArray;
+  let make = (~count) =>
+    List.init(count, _ =>
+      Cell.make(~fallback=None, ~value=getRandomCharacter() |> Option.some)
+    );
 };
 
-type t = Belt.HashMap.Int.t(Row.t);
+type t = List.t(Row.t);
 
 let make = (~rowCount, ~cellCount) =>
-  rowCount
-  ->Belt.Array.make()
-  ->Belt.Array.mapWithIndex((index, _) => (index, Row.make(cellCount)))
-  ->Belt.HashMap.Int.fromArray;
+  List.init(rowCount, _ => Row.make(~count=cellCount));

@@ -26,8 +26,6 @@ let make = _ => {
       |> Utils.Grid.addFallbacks
     );
 
-  grid |> Js.log;
-
   React.useEffect0(() => {
     let intervalId =
       Js.Global.setInterval(
@@ -36,8 +34,7 @@ let make = _ => {
             "refresh" |> Js.log;
             setGrid(grid => {grid |> Utils.Grid.clearWords});
           },
-        // 60000,
-        30000,
+        60000,
       );
 
     Some(() => Js.Global.clearInterval(intervalId));

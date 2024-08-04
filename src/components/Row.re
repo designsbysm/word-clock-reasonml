@@ -12,9 +12,9 @@ let style =
 let make = (~row: Types.Grid.Row.t) =>
   <div style>
     {row
-     ->Belt.HashMap.Int.toArray
-     ->Belt.Array.mapWithIndex((index, (_, cell)) =>
-         <Cell cell key={index |> string_of_int} />
-       )
-     ->React.array}
+     |> List.mapi((index, cell) =>
+          <Cell cell key={index |> string_of_int} />
+        )
+     |> Array.of_list
+     |> React.array}
   </div>;

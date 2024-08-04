@@ -17,22 +17,31 @@ let make = _ => {
 
   Types.Word.getWordsList(~hours, ~minutes) |> Array.of_list |> Js.log;
 
-  let grid =
-    Types.Grid.make(
-      ~rowCount=Types.Grid.number_of_rows,
-      ~cellCount=Types.Grid.number_of_cells,
+  let (grid, setGrid) =
+    React.useState(() =>
+      Types.Grid.make(
+        ~rowCount=Types.Grid.number_of_rows,
+        ~cellCount=Types.Grid.number_of_cells,
+      )
+      |> Utils.Grid.addFallbacks
     );
+
+  grid |> Js.log;
+
+  React.useEffect0(() => {
+    let intervalId =
+      Js.Global.setInterval(
+        ~f=
+          () => {
+            "refresh" |> Js.log;
+            setGrid(grid => {grid |> Utils.Grid.clearWords});
+          },
+        // 60000,
+        30000,
+      );
+
+    Some(() => Js.Global.clearInterval(intervalId));
+  });
 
   <div style> <Grid grid /> </div>;
 };
-
-// const [wordGrid, setWordGrid] = React.useState(getWordGrid());
-// const [randomGrid] = React.useState(getRandomGrid());
-// const [refresh, setRefresh] = React.useState(true);
-
-// if (refresh) {
-//   setInterval(() => {
-//     setWordGrid(getWordGrid());
-//   }, 60000);
-
-//   setRefresh(false);

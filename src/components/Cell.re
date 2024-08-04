@@ -28,7 +28,8 @@ let make = (~cell: Types.Grid.Cell.t) =>
      |> (
        fun
        | {value: Some(value), _} => value
-       | {fallback, _} => fallback
+       | {fallback: Some(fallback), _} => fallback
+       | _ => "?"
      )
      |> React.string}
   </div>;

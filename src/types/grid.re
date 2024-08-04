@@ -3,7 +3,7 @@ let number_of_rows = 8;
 
 let getRandomCharacter = () => {
   let min = 65.;
-  let max = 90.;
+  let max = 91.;
 
   Js.Math.random()
   *. (max -. min)
@@ -14,7 +14,7 @@ let getRandomCharacter = () => {
 
 module Cell = {
   type t = {
-    fallback: string,
+    fallback: option(string),
     value: option(string),
   };
 
@@ -27,9 +27,7 @@ module Row = {
   let make = count =>
     count
     ->Belt.Array.make()
-    ->Belt.Array.mapWithIndex((index, _) =>
-        (index, Cell.make(getRandomCharacter(), None))
-      )
+    ->Belt.Array.mapWithIndex((index, _) => (index, Cell.make(None, None)))
     ->Belt.HashMap.Int.fromArray;
 };
 

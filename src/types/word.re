@@ -1,233 +1,133 @@
+open Belt;
+
 type t = {
   characters: string,
   line: int,
   start: int,
 };
 
-type list = List.t(t);
+// IDEA: HashMap using variant keys
 
-type map = {
-  hour1: t,
-  hour2: t,
-  hour3: t,
-  hour4: t,
-  hour5: t,
-  hour6: t,
-  hour7: t,
-  hour8: t,
-  hour9: t,
-  hour10: t,
-  hour11: t,
-  hour12: t,
-  minutes5: t,
-  minutes10: t,
-  minutes15: t,
-  minutes20: t,
-  minutes30: t,
-  a: t,
-  its: t,
-  minutes: t,
-  oclock: t,
-  past: t,
-  to_: t,
-};
+let hoursMap =
+  [|
+    (1, {characters: "ONE", line: 3, start: 7}),
+    (2, {characters: "TWO", line: 3, start: 9}),
+    (3, {characters: "THREE", line: 4, start: 0}),
+    (4, {characters: "FOUR", line: 4, start: 5}),
+    (5, {characters: "FIVE", line: 4, start: 9}),
+    (6, {characters: "SIX", line: 5, start: 0}),
+    (7, {characters: "SEVEN", line: 5, start: 4}),
+    (8, {characters: "EIGHT", line: 5, start: 8}),
+    (9, {characters: "NINE", line: 6, start: 0}),
+    (10, {characters: "TEN", line: 6, start: 0}),
+    (11, {characters: "ELEVEN", line: 6, start: 0}),
+    (12, {characters: "TWELVE", line: 7, start: 0}),
+  |]
+  |> HashMap.Int.fromArray;
 
-let map = {
-  hour1: {
-    characters: "ONE",
-    line: 3,
-    start: 7,
-  },
-  hour2: {
-    characters: "TWO",
-    line: 3,
-    start: 9,
-  },
-  hour3: {
-    characters: "THREE",
-    line: 4,
-    start: 0,
-  },
-  hour4: {
-    characters: "FOUR",
-    line: 4,
-    start: 5,
-  },
-  hour5: {
-    characters: "FIVE",
-    line: 4,
-    start: 9,
-  },
-  hour6: {
-    characters: "SIX",
-    line: 5,
-    start: 0,
-  },
-  hour7: {
-    characters: "SEVEN",
-    line: 5,
-    start: 4,
-  },
-  hour8: {
-    characters: "EIGHT",
-    line: 5,
-    start: 8,
-  },
-  hour9: {
-    characters: "NINE",
-    line: 6,
-    start: 0,
-  },
-  hour10: {
-    characters: "TEN",
-    line: 6,
-    start: 0,
-  },
-  hour11: {
-    characters: "ELEVEN",
-    line: 6,
-    start: 0,
-  },
-  hour12: {
-    characters: "TWELVE",
-    line: 7,
-    start: 0,
-  },
-  minutes5: {
-    characters: "FIVE",
-    line: 2,
-    start: 0,
-  },
-  minutes10: {
-    characters: "TEN",
-    line: 0,
-    start: 6,
-  },
-  minutes15: {
-    characters: "QUARTER",
-    line: 1,
-    start: 0,
-  },
-  minutes20: {
-    characters: "TWENTY",
-    line: 1,
-    start: 7,
-  },
-  minutes30: {
-    characters: "HALF",
-    line: 0,
-    start: 9,
-  },
-  a: {
-    characters: "A",
-    line: 0,
-    start: 4,
-  },
-  its: {
-    characters: "ITS",
-    line: 0,
-    start: 0,
-  },
-  minutes: {
-    characters: "MINUTES",
-    line: 2,
-    start: 5,
-  },
-  oclock: {
-    characters: "OCLOCK",
-    line: 7,
-    start: 7,
-  },
-  past: {
-    characters: "PAST",
-    line: 3,
-    start: 0,
-  },
-  to_: {
-    characters: "TO",
-    line: 3,
-    start: 4,
-  },
-};
+let minutesMap =
+  [|
+    (5, {characters: "FIVE", line: 2, start: 0}),
+    (10, {characters: "TEN", line: 0, start: 6}),
+    (15, {characters: "QUARTER", line: 1, start: 0}),
+    (20, {characters: "TWENTY", line: 1, start: 7}),
+    (30, {characters: "HALF", line: 0, start: 9}),
+  |]
+  |> HashMap.Int.fromArray;
 
-let getHours: Js.Date.t => list =
-  now => {
-    let hours = now |> Js.Date.getHours;
-    let minutes = now |> Js.Date.getMinutes;
+let othersMap =
+  [|
+    ("a", {characters: "A", line: 0, start: 4}),
+    ("its", {characters: "ITS", line: 0, start: 0}),
+    ("minutes", {characters: "MINUTES", line: 2, start: 5}),
+    ("oclock", {characters: "OCLOCK", line: 7, start: 7}),
+    ("past", {characters: "PAST", line: 3, start: 0}),
+    ("to", {characters: "TO", line: 3, start: 4}),
+  |]
+  |> HashMap.String.fromArray;
 
-    (hours, minutes)
-    |> (
-      fun
-      | (hours, minutes) when minutes > 30. => hours +. 1.
-      | _ => hours
-    )
-    |> (
-      fun
-      | hours when hours == 0. => 12.
-      | hours when hours > 12. => hours -. 12.
-      | hours => hours
-    )
-    |> (
-      fun
-      | hours when hours == 1. => [map.hour1]
-      | hours when hours == 2. => [map.hour2]
-      | hours when hours == 3. => [map.hour3]
-      | hours when hours == 4. => [map.hour4]
-      | hours when hours == 5. => [map.hour5]
-      | hours when hours == 6. => [map.hour6]
-      | hours when hours == 7. => [map.hour7]
-      | hours when hours == 8. => [map.hour8]
-      | hours when hours == 9. => [map.hour9]
-      | hours when hours == 10. => [map.hour10]
-      | hours when hours == 11. => [map.hour11]
-      | hours when hours == 12. => [map.hour12]
-      | _ => []
-    );
-  };
+let isBetween = (~min, ~max, value) => value > min && value <= max;
 
-let getMinutes: Js.Date.t => list =
-  now => {
-    let minutes = now |> Js.Date.getMinutes;
+let getHours = (~hours, ~minutes) =>
+  (hours, minutes)
+  |> (
+    fun
+    | (hours, minutes) when minutes > 30 => hours + 1
+    | _ => hours
+  )
+  |> (
+    fun
+    | hours when hours == 0 => 12
+    | hours when hours > 12 => hours - 12
+    | hours => hours
+  )
+  |> HashMap.Int.get(hoursMap)
+  |> (words => [words]);
 
-    minutes
-    |> (
-      fun
-      | minutes
-          when minutes > 2. && minutes <= 7. || minutes > 53. && minutes < 58. =>
-        [map.minutes5, map.minutes] |> Option.some
-      | minutes
-          when
-            minutes > 7. && minutes <= 13. || minutes > 47. && minutes <= 53. =>
-        [map.minutes10, map.minutes] |> Option.some
-      | minutes
-          when
-            minutes > 13. && minutes <= 17. || minutes > 42. && minutes <= 47. =>
-        [map.minutes15, map.a] |> Option.some
-      | minutes
-          when
-            minutes > 17. && minutes <= 25. || minutes > 35. && minutes <= 42. =>
-        [map.minutes20, map.minutes] |> Option.some
-      | minutes when minutes > 25. && minutes <= 35. =>
-        [map.minutes30, map.a] |> Option.some
-      | _ => None
-    )
-    |> (
-      fun
-      | Some(words) =>
-        minutes
-        |> (
-          fun
-          | minutes when minutes > 30. => [map.to_]
-          | _ => [map.past]
-        )
-        |> List.append(words)
-      | None => [map.oclock]
-    );
-  };
+let getMinutes = (~minutes) =>
+  minutes
+  |> (
+    fun
+    | minutes
+        when
+          minutes
+          |> isBetween(~min=2, ~max=7)
+          || minutes
+          |> isBetween(~min=53, ~max=58) => [
+        5 |> HashMap.Int.get(minutesMap),
+        "minutes" |> HashMap.String.get(othersMap),
+      ]
+    | minutes
+        when
+          minutes
+          |> isBetween(~min=7, ~max=13)
+          || minutes
+          |> isBetween(~min=47, ~max=53) => [
+        10 |> HashMap.Int.get(minutesMap),
+        "minutes" |> HashMap.String.get(othersMap),
+      ]
+    | minutes
+        when
+          minutes
+          |> isBetween(~min=13, ~max=17)
+          || minutes
+          |> isBetween(~min=42, ~max=47) => [
+        15 |> HashMap.Int.get(minutesMap),
+        "a" |> HashMap.String.get(othersMap),
+      ]
+    | minutes
+        when
+          minutes
+          |> isBetween(~min=17, ~max=25)
+          || minutes
+          |> isBetween(~min=35, ~max=42) => [
+        20 |> HashMap.Int.get(minutesMap),
+        "minutes" |> HashMap.String.get(othersMap),
+      ]
+    | minutes when minutes |> isBetween(~min=25, ~max=35) => [
+        30 |> HashMap.Int.get(minutesMap),
+        "a" |> HashMap.String.get(othersMap),
+      ]
+    | _ => []
+  )
+  |> (
+    fun
+    | [] => ["oclock" |> HashMap.String.get(othersMap)]
+    | words =>
+      minutes
+      |> (
+        fun
+        | minutes when minutes > 30 => [
+            "to" |> HashMap.String.get(othersMap),
+          ]
+        | _ => ["past" |> HashMap.String.get(othersMap)]
+      )
+      |> List.concat(words)
+  );
 
-let getWordsList: Js.Date.t => list =
-  now => {
-    [map.its]
-    |> List.append(now |> getMinutes)
-    |> List.append(now |> getHours);
-  };
+let getWordsList = (~hours, ~minutes) =>
+  List.concatMany([|
+    ["its" |> HashMap.String.get(othersMap)],
+    getMinutes(~minutes),
+    getHours(~hours, ~minutes),
+  |]);

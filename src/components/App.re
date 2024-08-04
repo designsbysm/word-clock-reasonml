@@ -12,12 +12,18 @@ let style =
 [@react.component]
 let make = _ => {
   let now = Js.Date.make();
-  now |> Types.Word.getWordsList |> Array.of_list |> Js.log;
+  let hours = now |> Js.Date.getHours |> int_of_float;
+  let minutes = now |> Js.Date.getMinutes |> int_of_float;
 
-  // now |> Utils.Words.getHourWords |> Array.of_list |> Js.log;
-  // now |> Utils.Words.getMinuteWords |> Array.of_list |> Js.log;
+  Types.Word.getWordsList(~hours, ~minutes) |> Array.of_list |> Js.log;
 
-  <div style> <Grid /> </div>;
+  let grid =
+    Types.Grid.make(
+      ~rowCount=Types.Grid.number_of_rows,
+      ~cellCount=Types.Grid.number_of_cells,
+    );
+
+  <div style> <Grid grid /> </div>;
 };
 
 // const [wordGrid, setWordGrid] = React.useState(getWordGrid());

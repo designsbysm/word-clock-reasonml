@@ -1,3 +1,6 @@
 (library
  (name types)
- (modes melange))
+ (modes melange)
+ (libraries melange.belt)
+ (preprocess
+  (pps melange.ppx)))

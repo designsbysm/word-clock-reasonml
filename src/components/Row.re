@@ -9,25 +9,12 @@ let style =
   );
 
 [@react.component]
-let make = _ => {
-  <div style> {"Row" |> React.string} <Cell /> </div>;
-};
-
-// import Cell from "./Cell";
-
-// const Row: React.FC<{
-//   cells: string[];
-//   random: string[][];
-//   row: number;
-//   words: string[][];
-// }> = ({ cells, row, random, words }) => {
-//   return (
-//     <div className="row">
-//       {cells.map((_, index) => {
-//         return <Cell key={index} cell={index} random={random} row={row} words={words} />;
-//       })}
-//     </div>
-//   );
-// };
-
-// export default Row;
+let make = (~row: Types.Grid.Row.t) =>
+  <div style>
+    {row
+     ->Belt.HashMap.Int.toArray
+     ->Belt.Array.mapWithIndex((index, (_, cell)) =>
+         <Cell cell key={index |> string_of_int} />
+       )
+     ->React.array}
+  </div>;

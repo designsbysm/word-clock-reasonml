@@ -10,9 +10,12 @@ let style =
   );
 
 [@react.component]
-let make = _ => {
-  <div style> {"Grid" |> React.string} <Row /> </div>;
-};
-
-// {wordGrid.map((row, index) => {
-//   return <Row key={index} cells={row} random={randomGrid} row={index} words={wordGrid} />;
+let make = (~grid: Types.Grid.t) =>
+  <div style>
+    {grid
+     ->Belt.HashMap.Int.toArray
+     ->Belt.Array.mapWithIndex((index, (_, row)) =>
+         <Row key={index |> string_of_int} row />
+       )
+     ->React.array}
+  </div>;

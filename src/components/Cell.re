@@ -14,22 +14,21 @@ module Styles = {
 };
 
 [@react.component]
-let make = _ => {
-  <div style=Styles.cell> {"Cell" |> React.string} </div>;
-};
-
-// import React from "react";
-
-// const Cell: React.FC<{
-//   cell: number;
-//   random: string[][];
-//   row: number;
-//   words: string[][];
-// }> = ({ cell, random, row, words }) => {
-//   const char = words[row][cell];
-//   const rand = random[row][cell];
-
-//   return <div className={char ? "cell active" : "cell"}>{char || rand}</div>;
-// };
-
-// export default Cell;
+let make = (~cell: Types.Grid.Cell.t) =>
+  <div
+    style={
+      cell
+      |> (
+        fun
+        | {value: Some(_), _} => Styles.cellActive
+        | _ => Styles.cell
+      )
+    }>
+    {cell
+     |> (
+       fun
+       | {value: Some(value), _} => value
+       | {fallback, _} => fallback
+     )
+     |> React.string}
+  </div>;

@@ -11,10 +11,7 @@ let style =
 
 [@react.component]
 let make = _ => {
-  let now = Js.Date.make();
-  let hours = now |> Js.Date.getHours |> int_of_float;
-  let minutes = now |> Js.Date.getMinutes |> int_of_float;
-
+  let (now, setNow) = React.useState(() => Js.Date.make());
   let (grid, setGrid) =
     React.useState(() =>
       Types.Grid.make(
@@ -22,27 +19,28 @@ let make = _ => {
         ~cellCount=Types.Grid.number_of_cells,
       )
       |> Utils.Grid.addFallbacks
-      |> Utils.Grid.applyWordListToGrid(
-           ~words=Types.Word.getWordsList(~hours, ~minutes),
-         )
     );
+
+  React.useEffect2(
+    () => {
+      let hours = now |> Js.Date.getHours |> int_of_float;
+      let minutes = now |> Js.Date.getMinutes |> int_of_float;
+
+      setGrid(grid =>
+        grid
+        |> Utils.Grid.applyWordListToGrid(
+             ~words=Types.Word.getWordsList(~hours, ~minutes),
+           )
+      );
+
+      None;
+    },
+    (now, setGrid),
+  );
 
   React.useEffect0(() => {
     let intervalId =
-      Js.Global.setInterval(
-        ~f=
-          () => {
-            "refresh" |> Js.log;
-            setGrid(grid => {
-              grid
-              |> Utils.Grid.clearWords
-              |> Utils.Grid.applyWordListToGrid(
-                   ~words=Types.Word.getWordsList(~hours, ~minutes),
-                 )
-            });
-          },
-        60000,
-      );
+      Js.Global.setInterval(~f=() => {setNow(_ => Js.Date.make())}, 60000);
 
     Some(() => Js.Global.clearInterval(intervalId));
   });

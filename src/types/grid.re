@@ -25,9 +25,7 @@ module Row = {
   type t = List.t(Cell.t);
 
   let make = (~count) =>
-    List.init(count, _ =>
-      Cell.make(~fallback=None, ~value=getRandomCharacter() |> Option.some)
-    );
+    List.init(count, _ => Cell.make(~fallback=None, ~value=None));
 };
 
 type t = List.t(Row.t);

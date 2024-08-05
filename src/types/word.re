@@ -6,6 +6,8 @@ type t = {
   start: int,
 };
 
+type wordList = list(option(t));
+
 // IDEA: HashMap using variant keys
 
 let hoursMap =

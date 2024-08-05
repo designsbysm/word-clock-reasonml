@@ -15,8 +15,6 @@ let make = _ => {
   let hours = now |> Js.Date.getHours |> int_of_float;
   let minutes = now |> Js.Date.getMinutes |> int_of_float;
 
-  Types.Word.getWordsList(~hours, ~minutes) |> Array.of_list |> Js.log;
-
   let (grid, setGrid) =
     React.useState(() =>
       Types.Grid.make(
@@ -24,6 +22,9 @@ let make = _ => {
         ~cellCount=Types.Grid.number_of_cells,
       )
       |> Utils.Grid.addFallbacks
+      |> Utils.Grid.applyWordListToGrid(
+           ~words=Types.Word.getWordsList(~hours, ~minutes),
+         )
     );
 
   React.useEffect0(() => {
@@ -32,7 +33,13 @@ let make = _ => {
         ~f=
           () => {
             "refresh" |> Js.log;
-            setGrid(grid => {grid |> Utils.Grid.clearWords});
+            setGrid(grid => {
+              grid
+              |> Utils.Grid.clearWords
+              |> Utils.Grid.applyWordListToGrid(
+                   ~words=Types.Word.getWordsList(~hours, ~minutes),
+                 )
+            });
           },
         60000,
       );

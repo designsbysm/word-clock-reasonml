@@ -24,6 +24,10 @@ create-switch: ## Create opam switch
 format: ## Format the codebase with ocamlformat
 	$(DUNE) build @fmt --auto-promote
 
+.PHONY: docker-push
+docker-push: ## Build Docker image and push to Docker Hub
+	 docker buildx build --platform linux/amd64 --push -t smatthews02/word-clock:latest .
+
 .PHONY: init
 init: create-switch install ## Configure everything to develop this repository in local, runs `create-switch`, `install`, and `check-npm-deps`
 

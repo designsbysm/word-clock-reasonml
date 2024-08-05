@@ -40,8 +40,6 @@
    (>= 0.26.2))
   (ocaml-lsp-server
    (>= 1.18.0))
-  (opam-check-npm-deps
-   (>= 2.0.0))
   reason-react-ppx)
  (tags
   (reasonml, ocaml, melange)))

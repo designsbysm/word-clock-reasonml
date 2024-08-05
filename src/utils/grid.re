@@ -11,43 +11,33 @@ let addFallbacks = (grid: Types.Grid.t) =>
      );
 
 let applyWordListToRow = (~words: Types.Word.wordList, row: Types.Grid.Row.t) => {
-  let update = ref(row);
+  let cellMap = Belt.HashMap.Int.make(~hintSize=Types.Grid.number_of_cells);
 
   words
   |> List.iter(word =>
        word
        |> (
          fun
-         | Some({characters, start, _}: Types.Word.t) => {
-             let characters = characters |> Js.String.split(~sep="");
-
-             update :=
-               update^
-               |> List.mapi((index, {fallback, _}: Types.Grid.Cell.t) => {
-                    let value =
-                      index
-                      - start
-                      |> (
-                        fun
-                        | index when index >= 0 =>
-                          characters->Belt.Array.get(index)
-                        | _ => None
-                      );
-
-                    Types.Grid.Cell.make(~fallback, ~value);
-                  });
-
-             ();
-           }
-
+         | Some({characters, start, _}: Types.Word.t) =>
+           characters
+           |> Js.String.split(~sep="")
+           |> Array.iteri((index, character) =>
+                cellMap->Belt.HashMap.Int.set(index + start, character)
+              )
          | None => ()
        )
      );
 
-  update^;
+  row
+  |> List.mapi((index, {fallback, _}: Types.Grid.Cell.t) =>
+       Types.Grid.Cell.make(
+         ~fallback,
+         ~value=cellMap->Belt.HashMap.Int.get(index),
+       )
+     );
 };
 
-let applyWordListToGrid = (~words: Types.Word.wordList, grid: Types.Grid.t) => {
+let applyWordListToGrid = (~words: Types.Word.wordList, grid: Types.Grid.t) =>
   grid
   |> List.mapi((index, row) =>
        row
@@ -62,15 +52,5 @@ let applyWordListToGrid = (~words: Types.Word.wordList, grid: Types.Grid.t) => {
                      | None => false
                    )
                  ),
-          )
-     );
-};
-
-let clearWords = (grid: Types.Grid.t) =>
-  grid
-  |> List.map(row =>
-       row
-       |> List.map(({fallback, _}: Types.Grid.Cell.t) =>
-            Types.Grid.Cell.make(~fallback, ~value=None)
           )
      );

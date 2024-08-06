@@ -37,13 +37,9 @@ install: ## Install development dependencies
 	opam update
 	opam install -y . --deps-only --with-test
 
-.PHONY: ngrok
-ngrok: ## Forward the locally running application to designsbysm.ngrok.io
-	ngrok http 5173 --host-header=\"localhost:5173\" --subdomain=designsbysm
-
 .PHONY: serve
 serve: ## Serve the application with a local HTTP server
-	npx vite _build/default --open
+	npx vite _build/default
 
 .PHONY: watch
 watch: ## Watch for the filesystem and rebuild on every change

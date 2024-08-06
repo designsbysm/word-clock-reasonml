@@ -11,6 +11,7 @@ let addFallbacks = (grid: Types.Grid.t) =>
      );
 
 let applyWordListToRow = (~words: Types.Word.wordList, row: Types.Grid.Row.t) => {
+  // IDEA: remove HashMap?
   let cellMap = Belt.HashMap.Int.make(~hintSize=Types.Grid.number_of_cells);
 
   words

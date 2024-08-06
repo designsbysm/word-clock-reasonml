@@ -5,4 +5,7 @@ export default {
     outDir: "./dist",
   },
   plugins: [nodeResolve()],
+  server: {
+    open: true,
+  },
 };

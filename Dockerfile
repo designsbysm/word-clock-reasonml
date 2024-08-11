@@ -1,4 +1,4 @@
-FROM ocaml/opam:ubuntu-ocaml-5.2
+FROM ocaml/opam:ubuntu-lts-ocaml-5.1
 
 USER root
 RUN apt-get update

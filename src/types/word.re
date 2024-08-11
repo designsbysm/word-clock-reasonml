@@ -114,7 +114,7 @@ let getMinutes = (~minutes) =>
   )
   |> (
     fun
-    | [] => ["oclock" |> HashMap.String.get(othersMap)]
+    | [] => []
     | words =>
       minutes
       |> (
@@ -130,6 +130,7 @@ let getMinutes = (~minutes) =>
 let getWordsList = (~hours, ~minutes) =>
   List.concatMany([|
     ["its" |> HashMap.String.get(othersMap)],
+    ["oclock" |> HashMap.String.get(othersMap)],
     getMinutes(~minutes),
     getHours(~hours, ~minutes),
   |]);
